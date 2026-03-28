@@ -5,6 +5,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "Product")
+@Table(name = "Products")
 public class Product {
 
     @Id
@@ -34,7 +35,7 @@ public class Product {
     @Column(nullable = false)
     private Long price;
 
-    @NotBlank(message = "Giảm giá không được để trống")
+    @NotNull(message = "Giảm giá không được để trống")
     @Min(value = 0, message = "Giảm giá không được âm") 
     @Max(value = 100, message = "Giảm giá không vượt quá 100%")
     @Column(nullable = false)
@@ -45,7 +46,7 @@ public class Product {
     private Double tax;
 
     @Column(nullable = false)
-    @NotBlank(message = "Lượng hàng không được để trống")
+    @NotNull(message = "Lượng hàng không được để trống")
     private Integer stock;
 
     @Column

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Thêm/Sửa Sản Phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-light">
+
+    <div class="d-flex">
+        <div th:replace="admin/fragments :: sidebar"></div>
+
+        <div class="flex-grow-1 p-4">
+            <h2 class="fw-bold mb-4" th:text="${pageTitle}"></h2>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <form th:action="@{/admin/products/save}" th:object="${product}" method="POST"
+                        enctype="multipart/form-data">
+                        <input type="hidden" th:field="*{id}" />
+                        <input type="hidden" th:field="*{picture}" />
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Tên Sản Phẩm <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" th:field="*{nameProduct}" class="form-control" required>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">Slug (Đường dẫn) <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" th:field="*{slug}" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-bold">Hãng Sản Xuất <span
+                                                class="text-danger">*</span></label>
+                                        <select th:field="*{idCompany}" class="form-select" required>
+                                            <option value="">-- Chọn Hãng --</option>
+                                            <option th:each="company : ${companies}" th:value="${company.id}"
+                                                th:text="${company.companyName}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">Giá bán (VNĐ) <span
+                                                class="text-danger">*</span></label>
+                                        <input type="number" th:field="*{price}" class="form-control" required min="0">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">Giảm giá (%) <span
+                                                class="text-danger">*</span></label>
+                                        <input type="number" th:field="*{discount}" class="form-control" required
+                                            min="0" max="100">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label fw-bold">Tồn kho <span
+                                                class="text-danger">*</span></label>
+                                        <input type="number" th:field="*{stock}" class="form-control" required min="0">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Thông số kỹ thuật <span
+                                            class="text-danger">*</span></label>
+                                    <textarea th:field="*{specifications}" class="form-control" rows="4"
+                                        required></textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Thuế (Tax) <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" th:field="*{tax}" class="form-control" required
+                                        min="0">
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body text-center">
+                                        <label class="form-label fw-bold w-100 text-start">Hình ảnh sản phẩm</label>
+                            
+                                        <div id="imagePreviewContainer"
+                                            class="mb-3 d-flex justify-content-center align-items-center bg-white border rounded"
+                                            style="min-height: 200px; padding: 10px;">
+                            
+                                            <img th:if="${product.picture != null && product.picture != 'product_default.png'}" id="imagePreview"
+                                                th:src="@{'/images/' + ${product.picture}}" class="img-fluid rounded"
+                                                style="max-height: 200px; object-fit: contain;">
+                            
+                                            <i th:if="${product.picture == null || product.picture == 'product_default.png'}" id="imagePreviewIcon"
+                                                class="fas fa-box text-muted" style="font-size: 5rem;"></i>
+                                        </div>
+                            
+                                        <input type="file" name="imageFile" id="imageInput" class="form-control" accept="image/png, image/jpeg"
+                                            onchange="previewImage(this)">
+                            
+                                        <small class="text-muted d-block mt-2">Chỉ hỗ trợ file JPG, PNG. Bỏ trống nếu không muốn đổi ảnh.</small>
+                                    </div>
+                                </div>
+                            
+                                <div class="mb-4 form-check form-switch p-3 bg-light rounded border">
+                                    <input class="form-check-input ms-0 me-2" type="checkbox" th:field="*{active}" id="activeSwitch">
+                                    <label class="form-check-label fw-bold" for="activeSwitch">Cho phép hiển thị bán</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <button type="submit" class="btn btn-success px-4"><i class="fas fa-save me-2"></i>Lưu Sản
+                            Phẩm</button>
+                        <a th:href="@{/admin/products}" class="btn btn-secondary px-4">Hủy</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function previewImage(input) {
+            const container = document.getElementById('imagePreviewContainer');
+            let img = document.getElementById('imagePreview');
+            let icon = document.getElementById('imagePreviewIcon');
+
+            // Kiểm tra xem người dùng có chọn file không
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // Nếu trang đang hiện Icon (chưa có ảnh)
+                    if (!img) {
+                        if (icon) icon.remove(); // Ẩn icon đi
+
+                        // Tạo thẻ <img> mới
+                        img = document.createElement('img');
+                        img.id = 'imagePreview';
+                        img.className = 'img-fluid rounded';
+                        img.style.maxHeight = '200px';
+                        img.style.objectFit = 'contain';
+                        container.appendChild(img);
+                    }
+
+                    // Cập nhật đường dẫn ảnh hiển thị thành file vừa chọn
+                    img.src = e.target.result;
+                };
+
+                // Đọc file dưới dạng URL base64 để hiển thị
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

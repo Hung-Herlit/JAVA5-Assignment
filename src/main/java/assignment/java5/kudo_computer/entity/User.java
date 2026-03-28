@@ -11,7 +11,7 @@ import lombok.Setter;
 import java.sql.Date;
 
 @Entity
-@Table(name = "User")
+@Table(name = "Users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

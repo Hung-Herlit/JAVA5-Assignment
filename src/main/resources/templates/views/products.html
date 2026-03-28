@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Kudo Computer'">Danh sách sản phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            background: #f5f5f5;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 220px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .product-info {
+            padding: 15px;
+            border-top: 1px solid #f8f9fa;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            height: 45px;
+            /* Giới hạn 2 dòng tên */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            font-size: 0.95rem;
+        }
+
+        .badge-discount {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .badge-outstock {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 3;
+        }
+    </style>
+</head>
+
+<body>
+    <div th:replace="common/header :: header"></div>
+
+    <div class="container my-5" style="min-height: 60vh;">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <h2 class="fw-bold" style="color: #090040; border-left: 5px solid #667eea; padding-left: 15px;"
+                th:text="${pageTitle}">DANH SÁCH SẢN PHẨM</h2>
+            <p class="text-muted ms-3" th:if="${keywords}">
+                Tìm thấy <strong class="text-primary" th:text="${products.size()}">0</strong> kết quả cho "<span
+                    th:text="${keywords}"></span>"
+            </p>
+        </nav>
+
+        <div th:if="${#lists.isEmpty(products)}" class="text-center py-5 bg-white rounded shadow-sm">
+            <img src="https://cdn-icons-png.flaticon.com/512/6134/6134065.png" alt="Empty"
+                style="width: 120px; opacity: 0.5;">
+            <h5 class="text-muted mt-3">Rất tiếc, chúng tôi không tìm thấy sản phẩm nào!</h5>
+            <p class="text-muted small">Hãy thử sử dụng từ khóa khác hoặc quay lại trang chủ.</p>
+            <a href="/home" class="btn btn-primary px-4 mt-2">Quay về trang chủ</a>
+        </div>
+
+        <div class="product-grid" th:unless="${#lists.isEmpty(products)}">
+            <div class="product-card position-relative" th:each="p : ${products}">
+
+                <div th:if="${p.discount > 0}" class="badge-discount" th:text="'-' + ${p.discount} + '%'"></div>
+
+                <div th:if="${p.stock <= 0}" class="badge-outstock">Hết hàng</div>
+
+                <div class="product-image">
+                    <i th:if="${p.picture == 'product_default.png'}" class="fas fa-laptop text-light"
+                        style="font-size: 5rem;"></i>
+                    <img th:unless="${p.picture == 'product_default.png'}" th:src="@{'/images/' + ${p.picture}}"
+                        th:style="${p.stock <= 0 ? 'opacity: 0.5' : ''}" alt="Product image">
+                </div>
+
+                <div class="product-info">
+                    <div class="product-name">
+                        <a th:href="@{'/product/' + ${p.slug}}" class="stretched-link text-decoration-none text-dark"
+                            th:text="${p.nameProduct}">Tên sản phẩm</a>
+                    </div>
+                    <div class="product-price">
+                        <span class="fw-bold" style="color: #e74c3c; font-size: 1.1rem;"
+                            th:text="${#numbers.formatDecimal(p.price - (p.price * p.discount / 100), 0, 'COMMA', 0, 'POINT')} + '₫'">0₫</span>
+
+                        <div th:if="${p.discount > 0}">
+                            <small class="text-muted text-decoration-line-through"
+                                th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + '₫'"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="common/footer :: footer"></div>
+</body>
+
+</html>

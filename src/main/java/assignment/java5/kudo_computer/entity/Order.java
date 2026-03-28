@@ -1,5 +1,7 @@
 package assignment.java5.kudo_computer.entity;
 
+import java.sql.Date;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Order")
+@Table(name = "Orders")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +24,7 @@ public class Order {
 
     @NotNull(message = "Ngày đặt hàng không được để trống")
     @Column(name = "order_date", nullable = false)
-    private java.sql.Date orderDate;
+    private Date orderDate;
 
     @NotBlank(message = "Trạng thái đơn hàng không được để trống")
     @Column(nullable = false)

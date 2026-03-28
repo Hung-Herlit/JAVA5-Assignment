@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Test Upload File</title>
+</head>
+
+<body style="font-family: Arial; padding: 50px;">
+
+    <h2>Kiểm tra chức năng Upload File Độc lập</h2>
+
+    <form th:action="@{/upload-file}" method="POST" enctype="multipart/form-data" style="margin-top: 20px;">
+
+        <div style="margin-bottom: 15px;">
+            <label>Chọn ảnh từ máy tính của bạn:</label><br><br>
+            <input type="file" name="file" accept="image/png, image/jpeg" required>
+        </div>
+
+        <button type="submit"
+            style="padding: 10px 20px; background: #090040; color: white; border: none; cursor: pointer;">
+            Tải lên ngay
+        </button>
+
+    </form>
+
+</body>
+
+</html>
